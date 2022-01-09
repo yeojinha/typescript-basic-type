@@ -8,6 +8,8 @@ let isOk : Boolean = true; //Object형태
 //let isNotOk : boolean = new Boolean(true); error! primitive에 Object는 불가능하지만 역은 가능
 ```
 
+--------------------------------------------
+
 # Number / number
   * JavaScript 와 같이, TypeScript의 모든 숫자는 부동 소수점 값 입니다.
   * TypeScript는 16진수 및 10진수 리터럴 외에도, ECMAScript 2015에 도입된 2진수 및 8진수를 지원합니다.
@@ -32,6 +34,8 @@ let name: string = "mark";
 name = 'anna'
 ```
 
+--------------------------------------------
+
 # Template String
   * 행에 걸쳐 있거나, 표현식을 넣을 수 있는 문자열
   * 이 문자열은 backtick(=backquote) 기호에 둘러쌓여 있다.
@@ -48,6 +52,8 @@ I'll be ${age + 1} years old next month.`;
 let sentence: string = "Hello, my name is " + fullName + ".\n\n" +
 "I'll be " + (age + 1) + " years old next month.";
 ```
+
+--------------------------------------------
 
 # Symbol
   * ECMAScript 2015의 Symbol이다.
@@ -70,4 +76,56 @@ let obj = {
   [sym]: "value" //obj 객체의 [sym]이 symbole이며, [sym]이 key, "value"가 value이다.
 };
 console.log(obj[sym]); // "value"
+```
+
+--------------------------------------------
+
+# Undefined & Null
+  * TypeScript에서, undefined와 null은 실제로 각각 undefined 및 null이라는 타입을 가진다.
+  * void와 마찬가지로, 그 자체로는 그다지 유용하지 않다.
+  * 둘다 소문자로만 존재한다.
+
+```typescript
+  // 이 변수들에 할당할 수 있는 것들은 거의 없다.
+ 
+  let u: undefined = undefined;
+  let n: null = null;
+```
+
+--------------------------------------------
+
+# undefined & null are subtypes of all other types.
+  * 설정을 하지 않으면 그렇다.
+  * number 에 null 또는 undefined를 할당할 수 있다는 의미.
+  * 하지만, 컴파일 옵션에서 `--stringNullChecks` 사용하면, null과 undefined는 void 나 자기 자신들에게만 할당할 수 있다.
+    * 이 경우, null과 undefined 를 할당할 수 있게 하려면, union type을 이용해야 한다.
+
+```typescript
+let name : string = null;
+let age: number = undefined;
+
+// stringNullChecks => true
+// Type 'null' is not assignable to type 'string'.
+let name: string = null; //(X)
+
+// null => null || void, undefined => undefined || void
+// Type 'null' is not assginable to type 'undefined'.
+let u: undefined = null; //(X)
+let v: void = undefinedl; //(O)
+
+let union: string | null | undefined = 'str';
+```
+
+--------------------------------------------
+
+# null in JavaScript
+  * null 이라는 값으로 할당된 것을 null이라고 한다.
+  * 무언가가 있는데, 사용 준비가 덜 된 상태.
+  * null이라는 타입은 null 이라는 값만 가질 수 있다.
+  * 런타임에서 typeof 연산자를 사용하면 object라고 나온다.
+
+```javascript
+let n: null = null;
+console.log(n); // null
+console.log(typeof n);// object
 ```
