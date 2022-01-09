@@ -48,3 +48,12 @@ I'll be ${age + 1} years old next month.`;
 let sentence: string = "Hello, my name is " + fullName + ".\n\n" +
 "I'll be " + (age + 1) + " years old next month.";
 ```
+
+# Symbol
+  * ECMAScript 2015의 Symbol이다.
+  * new Symblo로 사용할 수 없다.
+  * Symbol을 함수로 사용해서 symbol 타입을 만들어낼 수 있다.
+
+```typescript
+console.log(Symbol('foo') === Symbol('foo'))
+```
