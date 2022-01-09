@@ -129,3 +129,70 @@ let n: null = null;
 console.log(n); // null
 console.log(typeof n);// object
 ```
+
+--------------------------------------------
+
+# object
+  * "primitive type이 아닌 것"을 나타내고 싶을 때 사용하는 타입
+
+# non-primitive type
+  * not number, string, boolean, bigint, symbol, null, or undefined
+
+
+* object에 들어가도 되는 형식은 아래와 같다.(단순 primitive는 불가능)
+```typescript
+
+let obj: object = {};
+
+obj = {name="Mark"};
+
+obj = [{name: 'Mark'}];
+
+obj = 39; //Error
+
+obj = 'Mark'; //Error
+
+obj = true; //Error
+
+obj = 100n; //Error
+
+obj = Symbol(); //Error
+
+obj = null; //Error
+
+obj = undefined; //Error
+```
+
+* Object.create()에 들어가도 되는 형식은 아래와 같다.
+
+```typescript
+  declare function create(o: object | null): void;
+
+  create({prop: 0});
+
+  create(null);
+
+  create(42); //Error
+
+  create("string"); //Error
+
+  create(false); //Error
+
+  create(undefined); //Error
+
+//Object.create
+Object.create(0); //Error
+```
+
+
+```typescript
+//create by obejct literal
+const person1= {name: 'Mark', age: 39};
+
+//person1 is not "object" type.
+//peson1 is "{name: string, age: number}" type.
+
+//create by Object.create
+const person2 = Object.create({name: 'Mark'm age: 39});
+```
+
