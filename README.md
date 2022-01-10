@@ -166,7 +166,7 @@ obj = undefined; //Error
 * Object.create()에 들어가도 되는 형식은 아래와 같다.
 
 ```typescript
-  declare function create(o: object | null): void;
+  declare function create(o: object | null): void; //object와 null만 받음
 
   create({prop: 0});
 
