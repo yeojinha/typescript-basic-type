@@ -196,3 +196,16 @@ const person1= {name: 'Mark', age: 39};
 const person2 = Object.create({name: 'Mark'm age: 39});
 ```
 
+--------------------------------------------
+
+# Array
+  * 원래 자바스크립트에서 array는 객체이다.
+  * 사용방법
+    * Array<타입>
+    * 타입[]
+
+```typescript
+  let list: number[] = [1,2,3];
+
+  let list: Array[number] = [1,2,3];
+```
