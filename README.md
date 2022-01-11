@@ -209,3 +209,29 @@ const person2 = Object.create({name: 'Mark'm age: 39});
 
   let list: Array[number] = [1,2,3];
 ```
+
+--------------------------------------------
+
+# any
+  * 어떤 타입이어도 상관없는 타입
+  * 컴파일 타임에 타입 체크가 정상적으로 이루어지지 않기 때문에 지양해야 함.
+  * 그래서 컴파일 옵션 중에는 any를 써야하는데, 쓰지 않으면 오류를 뱉도록 하는 옵션도 있다.
+    * noImplicitAny
+
+```typescript
+  function returnAny(message) : any{
+    console.log(message);
+  }
+  returnVoid('리턴은 아무거나')
+```
+  * any는 계속해서 개채를 통해 전파된다
+  * 결국, 모든 편의는 타입 안정성을 잃는 대가로 온다는 것을 기억
+  * 타입 안전성은 TypeScript를 사용하는 주요 동기 중 하나이며 필요하지 않은 경우에는 any를 사용하지 않도록 해야한다.
+
+```typescript
+  let looselyTyped: any ={};
+
+  let d = looselyTyped.a.b.c.d;
+  //  d = let d: any  <- any타입이 되어 안정성 저하
+  //any 타입의 변수를 다른 곳에 대입하면 그것이 any 타입이 된다.
+```
