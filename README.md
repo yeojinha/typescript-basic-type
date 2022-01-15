@@ -269,3 +269,218 @@ if(typeof maybe === 'string'){// if문에서 'string'으로 한정되어 타입 
   // const aBoolean: boolean = maybe; 타입에러 발생한다.
 }
 ```
+  # never
+  * never 타입은 모든 타입의 subtype이며, 모든 타입에 할당할 수 있다.
+  * 하지만, never에는 그 어떤 것도 할당할 수 없다.
+  * any 조차도 never에게 할당할 수 없다.
+  * 잘못된 타입을 넣는 실수를 막고자 할 때 사용한다.
+  * never를 반환하는 함수에 사용하면 불가능한 위치에 추가적인 코드를 사용하게끔 하는데, 이는 더 나은 에러 메시지를 보여주거나 파일 또는 반복문과 같은 자원을 닫는데 유용핟ㄷ. 
+
+```typescript
+  let a: string = 'hello';
+
+  if(typeof a!== 'string'){
+    let b: never = a;
+  }
+
+  type Indexable<T> = T extends string ? T & {[index: string]: any} : never;
+```
+
+  # structural tpye system - 구조가 같으면 , 같은 타입이다. -> javascript
+
+```typescript
+  interface IPerson{
+    name: string;
+    age: number;
+    speak(): string;
+  }
+
+  type PersonType = {
+    name: string;
+    age: number;
+    speak(): string;
+  };
+
+  let personInterface: IPerson = {} as any;
+  let personType: PersonType = {} as any;
+
+  personInterface = personType;
+  personType = personInterface;
+```
+  # nominal type system - 구조가 같아도 이름이 다르면, 다른 타입이다. -> C , JAVA
+    ```typescript
+      type PersonID = string & {readonly brand : unique symbol};
+
+      function Person(id: string) PersonID{
+        return id as PersonID;
+      }
+
+      function getPersonById(id: PersonID){}
+
+      getPersonById(PersonID ('id-aaaaaa'));
+      getPersonById('id-aaaaaa');
+    ```
+  # duck typing -> Python
+    * 만약 어떤 새가 오리처럼 걷고, 헤엄치고, 꽥꽥거리는 소리를 낸다면 나는 그 새를 오리라고 부를 것이다.
+
+  ```python
+    class Duck:
+      def sound(self):
+        print u"꽥꽥"
+    
+    class Dog:
+      def sound(self):
+          print u"멍멍"
+
+    def get_sound(animal):
+      animal.sound()
+    
+    def main():
+      bird = Duck()
+      dog = Dog()
+      get_sound(bird)
+      get_sound(dog)
+  ```
+
+  # 서브 타입(1)
+
+  ```typescript
+  // sub1 타입은 sup1 타입의 서브타입이다.
+  let sub1: 1 = 1;
+  let sup1: number = sub1;
+  sub1= sup1; // error! Type 'number' is not assignable to type '1'.
+
+  // sub2 타입은 sup2 타입의 서브타입이다.
+  let sub2: number[]=[1];
+  let sup2: object = sub2;
+  sub2=sup2 //error! Type '{}' is missing the following properties from type 'number[]': length, pop, push, concat, and 16 more
+
+  //sub3 타입은 sup3 타입의 서브 타입이다.
+  let sub3: [number, number]= [1,2];
+  let sup3: number[] = sub3;
+  sub3=sup3; //error! Type 'number[]' is not assignable to type '[number, number]'. Target requires 2 elements(s) but source may have fewer.
+  ```
+
+  # 서브 타입(2)
+
+  ```typescript
+  // sub4 타입은 sup4 타입의 서브 타입이다.
+  let sub4: number =1;
+  let sup4: any = sub4;
+  sub4 = sup4;
+
+  // sub5 타입은 sup5 타입의 서브 타입이다.
+  let sub5: never = 0 as never;
+  let sup5: number = sub5;
+  sub5 = sup5; // error! Type 'number' is not assignable to type 'never'
+
+  class Animal{}
+  class Dog extends Animal{
+    eat(){}
+  }
+
+  //sub6 타입은 sup6 타입의 서브 타입이다.
+  let sub6: Dog = new Dog();
+  let sup6: Animal = sub6;
+  sub6 = sup6; // error! Property 'eat' is missing in type'SubAnimal' but required int type 'SubDog'.
+  ```
+
+  ## 1. 같거나 서브 타입인 경우, 할당이 가능하다 => 공변
+
+  ```typescript
+  //primitive type
+  let sub7: string = '';
+  let sup7: string | number = sub7;
+
+  //object - 각각의 프로퍼티가 대응하는 프로퍼티와 같거나 서브 타입이어야 한다.
+  let sub8: {a: string; b: number} = {a: '', b: 1};
+  let sup8: {a: string | number; b: number} = sub8;
+
+  //array - object 와 마찬가지
+  let sub9: Array<{a: string; b: number}>=[{a:'', b:1}];
+  let sup9: Array<{a: string | number; b: number}> = sub9;
+  ```
+
+  ## 2. 함수의 매개변수 타입만 같거나 슈퍼타입인 경우, 할당이 가능하다. => 반병
+
+  ```typescript
+  class Person{}
+  class Developer extends Person{
+    coding(){}
+  }
+  class StartupDeveloper extends Developer{
+    burning(){}
+  }
+  function tellme(f: (d: Developer) => Developer)
+
+  //Developer => Developer 에다가 Developer => Developer 를 할당하는 경우
+  tellme(function dToD (d: Developer): Developer{
+    return new Developer();
+  });
+
+  //Developer => Developer 에다가 Person => Developer 를 할당하는 경우
+  tellme(function pToD(d: Person): Developer{
+    return new Developer();
+  });
+
+  //Developer => Developer 에다가 StartipDeveloper => Developer 를 할당하는 경우
+  tellme(function sTOd(d: StartupDeveloper): Developer{
+    return new Developer();
+  });
+  ```
+
+  ## strictFunctionTypes 옵션을 켜면
+  * 함수를 할당할 시에 함수의 매개변수 타입이 같거나 슈퍼타입이 아닌 경우, 에러를 통해 경고한다.
+
+  # 타입 별칭(별명)
+    * Interface랑 비슷하다.
+    * Primitive, Union Type, Tuple, Function
+    * 기타 직업 작성해야하는 타입을 다른 이름을 지정할 수 있다.
+    * 만들어진 타입의 refer로 사용하는 것이지 타입을 만드는 것이 아님.
+
+    ## Aliasing Primitive
+    ``` typescript
+    type MyStringType = string;
+    
+    const str = 'world';
+
+    let myStr: MyStringType = 'hello';
+    myStr = str;
+
+    /*
+    별 의미가 없다...
+    */
+    ```
+    ## Aliasing Union Type
+    ```typescript
+    let person: string | number = 0;
+    person = 'Mark';
+
+    type StringOrNumber = string | number;
+
+    let another : StringOrNumber = 0;
+    another = 'Anna'
+
+    /*
+    1. 유니온 타이은 A도 가능하고 B도 가능한 타입
+    2. 길게 쓰는 걸 짧게
+    */
+    ```
+
+    ## Aliasing Tuple
+    ```typescript
+    let person: [string, number] = ['Mark', 35];
+
+    type PersonTuple = [string, number];
+
+    let another: PersonTuple = ['Anna', 24];
+    /*
+    1. 튜플 타입에 별칭을 줘서 여러군데서 사용할 수 있게 한다.
+    */
+    ```
+
+    ## Aliasing Function
+
+    ```typescript
+    type EatType = (food: string) => void;
+    ```
